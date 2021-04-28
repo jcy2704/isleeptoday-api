@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     else
       render json: {
         status: 500,
-        errors: ['no users found']
+        errors: ['No users found']
       }
     end
   end
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     else
       render json: {
         status: 500,
-        errors: ['user not found']
+        errors: ['User not found']
       }
     end
   end
@@ -35,7 +35,7 @@ class UsersController < ApplicationController
         status: :created,
         user: @user
       }
-    else 
+    else
       render json: {
         status: 500,
         errors: @user.errors.full_messages

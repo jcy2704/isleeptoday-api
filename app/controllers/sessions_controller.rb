@@ -1,31 +1,36 @@
 class SessionsController < ApplicationController
   def create
-    @user = User.find_by(email: session_params[:email])
+    @user = User.find_by(username: session_params[:username])
 
     if @user&.authenticate(session_params[:password])
       login!
+      token = encode({ user_id: @user.id })
       render json: {
         logged_in: true,
-        user: @user
+        user: @user,
+        token: token
       }
     else
       render json: {
         status: 401,
-        errors: ['no such user', 'verify credentials and try again or signup']
+        errors: ['No such user', 'Verify credentials and try again or signup']
       }
     end
   end
 
   def islogged_in?
-    if logged_in? && current_user
+    token = request.headers['Authenticate']
+    user = User.find(decode(token)['user_id'])
+
+    if logged_in? && current_user && user
       render json: {
         logged_in: true,
-        user: current_user
+        user: user
       }
     else
       render json: {
         logged_in: false,
-        message: 'no such user'
+        message: 'No such user'
       }
     end
   end
