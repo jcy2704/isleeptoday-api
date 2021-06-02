@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
   def index
     @users = User.all
+    p @users
     if @users
       render json: {
         users: @users
-      }
+      }, include: :listing, except: %i[created_at updated_at]
     else
       render json: {
         status: 500,
@@ -14,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by(username: params[:username])
     if @user
       render json: {
         user: @user

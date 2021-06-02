@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
       render json: {
         logged_in: true,
         user: user
-      }
+      }, include: :listing, except: %i[created_at updated_at]
     else
       render json: {
         logged_in: false,

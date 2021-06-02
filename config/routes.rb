@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
   get '/logged_in', to: 'sessions#islogged_in?'
 
-  resources :users, only: %i[create show index]
+  resources :users, only: %i[create index]
+
+  get '/users/:username', to: 'users#show'
 
   namespace :api do
     namespace :v1 do

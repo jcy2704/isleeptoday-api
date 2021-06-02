@@ -21,7 +21,7 @@ class Api::V1::ListingsController < ApplicationController
     @listing = Listing.new(listing_params)
 
     if @listing.save
-      render :show, status: :created, location: @listing
+      render :show, status: :created, location: api_v1_listing_path(@listing)
     else
       render json: @listing.errors, status: :unprocessable_entity
     end
@@ -31,7 +31,7 @@ class Api::V1::ListingsController < ApplicationController
   # PATCH/PUT /listings/1.json
   def update
     if @listing.update(listing_params)
-      render :show, status: :ok, location: @listing
+      render :show, status: :ok, location: api_v1_listing_path(@listing)
     else
       render json: @listing.errors, status: :unprocessable_entity
     end
