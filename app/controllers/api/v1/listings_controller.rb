@@ -19,6 +19,9 @@ class Api::V1::ListingsController < ApplicationController
   # POST /listings.json
   def create
     @listing = Listing.new(listing_params)
+    image = Cloudinary::Uploader.upload(params[:image])
+    @item = Item.create(item_image: image['url'])
+    @lisiting.image = @item
 
     if @listing.save
       render :show, status: :created, location: api_v1_listing_path(@listing)
