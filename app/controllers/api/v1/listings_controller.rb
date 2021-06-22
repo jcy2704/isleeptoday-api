@@ -19,12 +19,12 @@ class Api::V1::ListingsController < ApplicationController
   # POST /listings.json
   def create
     @listing = Listing.new(listing_params)
-    image = Cloudinary::Uploader.upload(params[:image])
-    @item = Item.create(item_image: image['url'])
-    @lisiting.image = @item
+    @listing.user_id = current_user.id
+    @image = Cloudinary::Uploader.upload(listing_params[:image])
+    @listing.image = @image['url']
 
     if @listing.save
-      render :show, status: :created, location: api_v1_listing_path(@listing)
+      render json: @listing, status: :created
     else
       render json: @listing.errors, status: :unprocessable_entity
     end
@@ -55,6 +55,6 @@ class Api::V1::ListingsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def listing_params
-    params.require(:listing).permit(:name, :description, :user_id)
+    params.require(:listing).permit(:name, :description, :image)
   end
 end
