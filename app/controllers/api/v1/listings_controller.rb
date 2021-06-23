@@ -23,13 +23,27 @@ class Api::V1::ListingsController < ApplicationController
   def create
     @listing = Listing.new(listing_params)
     @listing.user_id = current_user.id
-    @image = Cloudinary::Uploader.upload(listing_params[:image], folder: 'isleeptoday/listings')
-    @listing.image = @image['url']
+    if listing_params[:image] != 'undefined'
+      @image = Cloudinary::Uploader.upload(listing_params[:image], folder: 'isleeptoday/listings')
+      @listing.image = @image['url']
+    end
 
-    if @listing.save
+    if @listing.save && listing_params[:image] != 'undefined'
       render json: @listing, status: :created
     else
-      render json: @listing.errors, status: :unprocessable_entity
+      Cloudinary::Uploader.destroy(@image['public_id']) unless listing_params[:image] == 'undefined'
+
+      full_errors = []
+
+      @listing.errors.each do |x|
+        full_errors.append(x.full_message)
+      end
+
+      full_errors.append('Photo needs to be added') if listing_params[:image] == 'undefined'
+
+      render json: {
+        errors: full_errors
+      }, status: :unprocessable_entity
     end
   end
 
