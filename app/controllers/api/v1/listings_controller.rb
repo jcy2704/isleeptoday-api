@@ -4,7 +4,10 @@ class Api::V1::ListingsController < ApplicationController
   # GET /listings
   # GET /listings.json
   def index
-    @listings = Listing.all
+    @listings = Listing.all.includes(:user)
+    @listings.each do |listing|
+      listing.owner = listing.user.username
+    end
 
     render json: @listings
   end
@@ -20,7 +23,7 @@ class Api::V1::ListingsController < ApplicationController
   def create
     @listing = Listing.new(listing_params)
     @listing.user_id = current_user.id
-    @image = Cloudinary::Uploader.upload(listing_params[:image])
+    @image = Cloudinary::Uploader.upload(listing_params[:image], folder: 'isleeptoday/listings')
     @listing.image = @image['url']
 
     if @listing.save
