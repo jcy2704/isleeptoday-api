@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     else
       render json: {
         status: 401,
-        errors: ['No such user', 'Verify credentials and try again or signup']
+        errors: ['Verify credentials and try again or signup']
       }
     end
   end
